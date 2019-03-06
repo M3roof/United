@@ -112,7 +112,8 @@ client.on('reconnecting', () => console.log(`
 
 client.on('ready', async() => {
     setInterval(()=>{
-    client.guilds.get(ServerID).channels.get(ChannelID).send('**Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , Drak , **')
+    client.guilds.get(ServerID).channels.get(ChannelID).send('$fa')
+    client.guilds.get(ServerID).channels.get(ChannelID).send('ان الله يحب المؤمنين')
     },2000);
 })
 
