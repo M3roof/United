@@ -29,4 +29,4 @@ async def on_message(message):
 
 
 
-client.run(process.env.BOT_TOKEN);
+client.run('NTI1NjU3MTE5ODgyNjA4NjQw.D3QcVw.vFdC49Pf_1Jm3STt_rGU2m2vHNw')
