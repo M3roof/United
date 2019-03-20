@@ -1,51 +1,31 @@
-import os
 import discord
+import asyncio
 
-from discord.ext.commands import DefaultHelpCommand
-from data import Bot
-from utils import permissions, default
+client = discord.Client()
 
-config = default.get("config.json")
-description = """
-A simple starter bot code
-Made by AlexFlipnote
-"""
+@client.event
+async def on_ready():
+    print('Logged in as')
+    print(client.user.name)
+    print(client.user.id)
+    print('------')
 
+@client.event
+async def on_message(message):
+    if message.content.startswith('!test'):
+        counter = 0
+        tmp = await client.send_message(message.channel, 'Calculating messages...')
+        async for log in client.logs_from(message.channel, limit=100):
+            if log.author == message.author:
+                counter += 1
 
-class HelpFormat(DefaultHelpCommand):
-    async def get_destination(self, no_pm: bool = False):
-        try:
-            if permissions.can_react(self.context):
-                await self.context.message.add_reaction(chr(0x2709))
-        except discord.Forbidden:
-            pass
-
-        if no_pm:
-            return self.context.channel
-        else:
-            return self.context.author
-
-    async def send_command_help(self, command):
-        self.add_command_formatting(command)
-        self.paginator.close_page()
-        await self.send_pages(no_pm=True)
-
-    async def send_pages(self, no_pm: bool = False):
-        destination = await self.get_destination(no_pm=no_pm)
-        try:
-            for page in self.paginator.pages:
-                await destination.send(page)
-        except discord.Forbidden:
-            destination = await self.get_destination(no_pm=True)
-            await destination.send("Couldn't send help to you due to blocked DMs...")
+        await client.edit_message(tmp, 'You have {} messages.'.format(counter))
+    elif message.content.startswith('!sleep'):
+        await asyncio.sleep(5)
+        await client.send_message(message.channel, 'Done sleeping')
 
 
-print("Logging in...")
-bot = Bot(command_prefix=config.prefix, prefix=config.prefix, command_attrs=dict(hidden=True), help_command=HelpFormat())
 
-for file in os.listdir("cogs"):
-    if file.endswith(".py"):
-        name = file[:-3]
-        bot.load_extension(f"cogs.{name}")
 
-bot.run(config.token)
+
+client.run(str(os.environ.get('BOT_TOKEN')))
